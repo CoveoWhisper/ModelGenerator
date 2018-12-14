@@ -3,6 +3,7 @@ import requests
 from definitions import Definitions
 from pathlib import Path
 from generator.FacetModel.Facet import Facet
+from generator.FacetModel.serialization.object_encoder import ObjectEncoder
 
 
 class FacetModelGenerator(object):
@@ -19,7 +20,9 @@ class FacetModelGenerator(object):
             self.headers = {'Authorization': 'Bearer ' + self.apiKey}
 
     def generate_model(self):
-        return ''
+        facet_dictionary = self.get_all_documents_for_all_facets()
+        document_to_facet = self.invert_dictionary(facet_dictionary)
+        self.save_model(document_to_facet, Definitions.ROOT_DIR)
 
     def get_all_facets_name(self):
         response = requests.get(self.get_fields_URL, headers=self.headers).json()
@@ -40,8 +43,9 @@ class FacetModelGenerator(object):
     def get_all_documents_for_all_facets(self):
         facets = self.get_all_facets()
 
-        facet_with_documents = dict()
+        facet_dictionary = dict()
 
+        i = 0
         for name, values in facets.items():
             for value in values:
                 if ',' in value:
@@ -61,7 +65,29 @@ class FacetModelGenerator(object):
                         rowId = response['results'][-1]['raw']['rowid']
                         documents_uri.extend(document['uri'] for document in response['results'])
 
-                facet_with_documents[Facet(name, value)] = documents_uri
+                        facet_dictionary[Facet(name, value)] = documents_uri
 
-        return facet_with_documents
+            if i == 1:
+                break
+            i += 1
 
+        return facet_dictionary
+
+    def save_model(self, facet_dictionary, save_path):
+        binary_data = self.dict_to_binary(facet_dictionary)
+        file = open(save_path + '/facets', 'wb')
+        file.write(binary_data)
+        file.close()
+
+    @staticmethod
+    def invert_dictionary(dictionary):
+        inv_map = {}
+        for k, v in dictionary.items():
+            for value in v:
+                inv_map[value] = inv_map.get(value, [])
+                inv_map[value].append(k)
+        return inv_map
+
+    @staticmethod
+    def dict_to_binary(dictionary):
+        return json.dumps(dictionary, cls=ObjectEncoder).encode('utf-8')
