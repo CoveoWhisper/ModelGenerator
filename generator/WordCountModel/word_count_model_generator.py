@@ -34,7 +34,7 @@ class WordCountModelGenerator(object):
         model = WordModel()
         factory = HTMLExtractor()
         data = {'numberOfResults': str(self.NUMBER_OF_RESULTS_PER_QUERY), 'sortCriteria': '@rowid ascending', 'cq': ''}
-        i = 0
+        
         while True:
             data['cq'] = '@rowid>' + str(smaller_id)
             response = requests.post(self.search_URL, headers=self.headers, data=data).json()
@@ -44,7 +44,6 @@ class WordCountModelGenerator(object):
 
             smaller_id = response['results'][-1]['raw']['rowid']
             for result in response['results']:
-                i += 1
                 if 'language' not in result['raw'] or self.RAW_LANGUAGE not in result['raw']['language']:
                     continue
 
@@ -54,9 +53,6 @@ class WordCountModelGenerator(object):
                 extracted_text = factory.extract_from_file_path(url, self.headers)
                 words = self.parseText(extracted_text)
                 model.add_words(words)
-
-                if i > 20:
-                    return model
 
         return model
 
