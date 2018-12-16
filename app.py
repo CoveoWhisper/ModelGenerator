@@ -1,25 +1,39 @@
 import argparse
 
+from generator.AnalyticsModel.analytics_model_generator import AnalyticsModelGenerator
 from generator.FacetModel.facet_model_generator import FacetModelGenerator
+from generator.KMeansModel.kmeans_model_generator import KMeansModelGenerator
 from generator.QuickViewsModel.quick_view_extractor import QuickViewExtractor
 from generator.TfidfModel.tfidf_model_generator import TfidfModelGenerator
 from generator.WordCountModel.word_count_model_generator import WordCountModelGenerator
 
-FacetModelGenerator_inst = FacetModelGenerator()
-WordCountModelGenerator_inst = WordCountModelGenerator()
-TfidfGenerator_inst = TfidfModelGenerator()
-QuickViewExtractor_inst = QuickViewExtractor()
-
 
 def main():
     program_arguments = get_program_arguments()
-    generate = program_arguments.generate
-    is_generate_all = program_arguments.generate_all
     is_verbose = program_arguments.verbose
+    
+    if program_arguments.generate_all:
+        FacetModelGenerator().generate_model()
+        AnalyticsModelGenerator().generate_model()
+        t = QuickViewExtractor().create_model()
+        WordCountModelGenerator().generate_model(t)
+        TfidfModelGenerator().generate_model(t)
+        KMeansModelGenerator().generate_model(t)
 
-    print(generate)
-    print(is_generate_all)
-    print(is_verbose)
+    else:
+        generate = program_arguments.generate
+        if 'a' in generate:
+            AnalyticsModelGenerator().generate_model()
+        if 'f' in generate:
+            FacetModelGenerator().generate_model()
+        if 't' or 'w' or 'k' in generate:
+            model = QuickViewExtractor().create_model()
+            if 't' in generate:
+                TfidfModelGenerator().generate_model(model)
+            if 'w' in generate:
+                WordCountModelGenerator().generate_model(model)
+            if 'k' in generate:
+                KMeansModelGenerator().generate_model(model)
 
 
 def get_program_arguments():
