@@ -9,7 +9,7 @@ class WordCountModelGenerator(object):
 
     def generate_model(self, model):
         count_vectorizer = self.vectorize(model)
-        self.save_model(count_vectorizer, Definitions.ROOT_DIR)
+        self.save_model(count_vectorizer, Definitions.ROOT_DIR + '/count_vectorizer_model.bin', 'wb')
 
     @staticmethod
     def vectorize(model):
@@ -19,5 +19,5 @@ class WordCountModelGenerator(object):
 
     @staticmethod
     def save_model(model, save_path):
-        with open(save_path + '/count_vectorizer_model.bin', 'wb') as bin_file:
+        with open(save_path) as bin_file:
             pickle.dump(model, bin_file)
