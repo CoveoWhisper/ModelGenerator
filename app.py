@@ -13,7 +13,7 @@ def main():
     is_verbose = program_arguments.verbose
 
     if program_arguments.generate_all:
-        FacetModelGenerator().generate_model()
+        FacetModelGenerator().generate_model(is_verbose)
         AnalyticsModelGenerator().generate_model(is_verbose)
         model = QuickViewExtractor().create_model(is_verbose)
         WordCountModelGenerator().generate_model(model, is_verbose)

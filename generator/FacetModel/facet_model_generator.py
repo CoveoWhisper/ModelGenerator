@@ -19,19 +19,32 @@ class FacetModelGenerator(object):
             self.search_URL = values['SearchURL']
             self.headers = {'Authorization': 'Bearer ' + self.apiKey}
 
-    def generate_model(self):
-        facet_dictionary = self.get_all_documents_for_all_facets()
+    def generate_model(self, is_verbose):
+        if is_verbose:
+            print("-- FACETS MODEL GENERATOR STARTED --")
+        facet_dictionary = self.get_all_documents_for_all_facets(is_verbose)
+        if is_verbose:
+            print('Inverting dictionary')
         document_to_facet = self.invert_dictionary(facet_dictionary)
+        if is_verbose:
+            print('Saving facets.bin')
         self.save_model(document_to_facet, Definitions.ROOT_DIR)
+        if is_verbose:
+            print('-- FACETS MODEL GENERATOR ENDED --')
 
     def get_all_facets_name(self):
         response = requests.get(self.get_fields_URL, headers=self.headers).json()
         return [val['name'] for val in response['fields'] if val['groupByField'] is True]
 
-    def get_all_facets(self):
+    def get_all_facets(self, is_verbose):
+        if is_verbose:
+            print('Getting all facet name')
         facets_name = self.get_all_facets_name()
 
         facets = dict()
+        if is_verbose:
+            print('Getting all facet values')
+
         for facet_name in facets_name:
             data = {'field': facet_name}
             response = requests.post(self.get_fields_value_URL, headers=self.headers, data=data).json()
@@ -40,11 +53,13 @@ class FacetModelGenerator(object):
 
         return facets
 
-    def get_all_documents_for_all_facets(self):
-        facets = self.get_all_facets()
+    def get_all_documents_for_all_facets(self, is_verbose):
+        facets = self.get_all_facets(is_verbose)
 
         facet_dictionary = dict()
 
+        if is_verbose:
+            print('Getting all documents for each facet values')
         for name, values in facets.items():
             for value in values:
                 if ',' in value:
