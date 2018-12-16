@@ -106,3 +106,4 @@ venv.bak/
 
 # Secret config
 appsettings_secret.json
+facets.bin

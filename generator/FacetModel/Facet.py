@@ -12,3 +12,6 @@ class Facet(object):
 
     def __hash__(self):
         return hash(tuple(sorted(self.__dict__.items())))
+
+    def to_dict(self):
+        return {"_type": Facet.__name__, "name": self.name, "value": self.value}
