@@ -45,7 +45,6 @@ class FacetModelGenerator(object):
 
         facet_dictionary = dict()
 
-        i = 0
         for name, values in facets.items():
             for value in values:
                 if ',' in value:
@@ -67,15 +66,11 @@ class FacetModelGenerator(object):
 
                         facet_dictionary[Facet(name, value)] = documents_uri
 
-            if i == 1:
-                break
-            i += 1
-
         return facet_dictionary
 
     def save_model(self, facet_dictionary, save_path):
         binary_data = self.dict_to_binary(facet_dictionary)
-        file = open(save_path + '/facets', 'wb')
+        file = open(save_path + '/facets.bin', 'wb')
         file.write(binary_data)
         file.close()
 
