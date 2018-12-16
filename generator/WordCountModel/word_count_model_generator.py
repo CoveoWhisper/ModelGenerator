@@ -9,7 +9,7 @@ class WordCountModelGenerator(object):
 
     def generate_model(self, model):
         count_vectorizer = self.vectorize(model)
-        self.save_model(count_vectorizer, Definitions.ROOT_DIR + '/count_vectorizer_model.bin', 'wb')
+        self.save_model(count_vectorizer, Definitions.ROOT_DIR + '/output/count_vectorizer_model.bin', 'wb')
 
     @staticmethod
     def vectorize(model):

@@ -12,7 +12,7 @@ class TfidfModelGenerator(object):
 
     def generate_model(self, model):
         tfidf_vectorizer = self.vectorize(model)
-        self.save_model(tfidf_vectorizer, Definitions.ROOT_DIR + '/query_model.bin', 'wb')
+        self.save_model(tfidf_vectorizer, Definitions.ROOT_DIR + '/output/query_model.bin', 'wb')
 
     @staticmethod
     def vectorize(model):

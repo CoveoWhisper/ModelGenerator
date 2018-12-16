@@ -10,8 +10,8 @@ class KMeansModelGenerator(object):
 
     def generate_model(self, model):
         tf_idf_vectorizer, tf_idf_matrix = self.vectorize(model)
-        self.save_model(tf_idf_vectorizer, Definitions.ROOT_DIR + '/tf_idf_vectorizer.bin')
-        self.save_model(tf_idf_matrix, Definitions.ROOT_DIR + '/k_means_clustering_model.bin')
+        self.save_model(tf_idf_vectorizer, Definitions.ROOT_DIR + '/output/tf_idf_vectorizer.bin')
+        self.save_model(tf_idf_matrix, Definitions.ROOT_DIR + '/output/k_means_clustering_model.bin')
 
     @staticmethod
     def vectorize(model):
@@ -35,5 +35,5 @@ class KMeansModelGenerator(object):
 
     @staticmethod
     def save_model(model, file_name):
-        with open(file_name + '/tf_idf_vectorizer.bin', 'wb') as bin_file:
+        with open(file_name, 'wb') as bin_file:
             pickle.dump(model, bin_file)
