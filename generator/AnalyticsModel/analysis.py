@@ -1,7 +1,7 @@
 from collections import defaultdict
 from itertools import dropwhile
 
-from whisper_analytics_analyzer.history_action_type import HistoryActionType
+from generator.AnalyticsModel.history_action_type import HistoryActionType
 
 
 def get_search_to_clicks_mapping(history):

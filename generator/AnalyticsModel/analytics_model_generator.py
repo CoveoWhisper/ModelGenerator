@@ -14,7 +14,7 @@ DOCUMENTS_SEARCHES_MAPPING_PATH = "output/documents_searches_mapping.json"
 
 class AnalyticsModelGenerator(object):
 
-    def generate_model(self):
+    def generate_model(self, is_verbose):
         pop = self.generate_documents_popularity(CLICKS_FILE_PATH)
         searches = self.generate_documents_searches_mapping(SEARCHES_FILE_PATH, CLICKS_FILE_PATH)
 

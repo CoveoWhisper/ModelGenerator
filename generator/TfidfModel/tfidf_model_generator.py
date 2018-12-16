@@ -8,17 +8,24 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from definitions import Definitions
 
 
-class TfidfModelGenerator(object):
+class TfIdfModelGenerator(object):
 
-    def generate_model(self, model):
-        tfidf_vectorizer = self.vectorize(model)
-        self.save_model(tfidf_vectorizer, Definitions.ROOT_DIR + '/output/query_model.bin', 'wb')
+    def generate_model(self, model, is_verbose):
+        if is_verbose:
+            print('-- TFIDF MODEL GENERATOR STARTED --')
+            print('vectorizing model')
+        tf_idf_vectorizer = self.vectorize(model)
+        if is_verbose:
+            print('saving query_model.bin')
+        self.save_model(tf_idf_vectorizer, Definitions.ROOT_DIR + '/output/query_model.bin', 'wb')
+        if is_verbose:
+            print('-- TFIDF MODEL GENERATOR  ENDED --')
 
     @staticmethod
     def vectorize(model):
-        tfidf_vectorizer = TfidfVectorizer()
-        return pd.DataFrame(tfidf_vectorizer.fit_transform(model).toarray(),
-                                  columns=tfidf_vectorizer.get_feature_names(), index=None)
+        tf_idf_vectorizer = TfidfVectorizer()
+        return pd.DataFrame(tf_idf_vectorizer.fit_transform(model).toarray(),
+                                  columns=tf_idf_vectorizer.get_feature_names(), index=None)
 
     @staticmethod
     def save_model(model, save_path):

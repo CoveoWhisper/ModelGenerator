@@ -7,9 +7,16 @@ from definitions import Definitions
 
 class WordCountModelGenerator(object):
 
-    def generate_model(self, model):
+    def generate_model(self, model, is_verbose):
+        if is_verbose:
+            print('-- WORD COUNT MODEL GENERATOR STARTED --')
+            print('vectorizing model')
         count_vectorizer = self.vectorize(model)
+        if is_verbose:
+            print('saving query_model.bin')
         self.save_model(count_vectorizer, Definitions.ROOT_DIR + '/output/count_vectorizer_model.bin', 'wb')
+        if is_verbose:
+            print('-- WORD COUNT MODEL GENERATOR ENDED --')
 
     @staticmethod
     def vectorize(model):

@@ -23,13 +23,15 @@ class QuickViewExtractor(object):
             self.search_URL = values['SearchURL']
             self.headers = {'Authorization': 'Bearer ' + values['ApiKey']}
 
-    def create_model(self):
+    def create_model(self, is_verbose):
+        if is_verbose:
+            print('-- QUICK VIEW EXTRACTOR STARTED --')
         smaller_id = 0
         model = []
-        factory = HTMLExtractor()
+        extractor = HTMLExtractor()
         data = {'numberOfResults': str(self.NUMBER_OF_RESULTS_PER_QUERY), 'sortCriteria': '@rowid ascending', 'cq': ''}
 
-        #i = 0
+        i = 0
         while True:
             data['cq'] = '@rowid>' + str(smaller_id)
             response = requests.post(self.search_URL, headers=self.headers, data=data).json()
@@ -44,14 +46,17 @@ class QuickViewExtractor(object):
 
                 url = 'https://cloudplatform.coveo.com/rest/search/v2/html?uniqueId=' + result['UniqueId']
 
-                extracted_text = factory.extract_from_file_path(url, self.headers)
+                extracted_text = extractor.extract_from_file_path(url, self.headers)
                 words = ' '.join(self.parseText(extracted_text))
                 model.append(words)
 
-                #i += 1
-                #if i > 10:
-                 #   return model
+                i += 1
+                if is_verbose and i % 250 == 0:
+                    print(str(i) + ' documents parsed')
 
+        if is_verbose:
+            print('all documents parsed')
+            print('-- QUICK VIEW EXTRACTOR ENDED --')
         return model
 
     @staticmethod
