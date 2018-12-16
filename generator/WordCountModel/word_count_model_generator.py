@@ -1,27 +1,11 @@
 import pandas as pd
 import pickle
-from pathlib import Path
-
-import json
 from sklearn.feature_extraction.text import CountVectorizer
 
 from definitions import Definitions
 
 
 class WordCountModelGenerator(object):
-    FILENAME = ''
-    NUMBER_OF_RESULTS_PER_QUERY = 1000
-    CREDENTIALS_PATH = Path(Definitions.ROOT_DIR + "/appsettings_secret.json")
-    ATTRIBUTES_LIST = ['title', 'tags', 'concepts', 'documenttype', 'sourcetype', 'source', 'collection', 'filetype',
-                       'sitename']
-    LANGUAGE = 'english'
-    RAW_LANGUAGE = 'English'
-
-    def __init__(self):
-        with open(self.CREDENTIALS_PATH, 'r') as file:
-            values = json.load(file)
-            self.search_URL = values['SearchURL']
-            self.headers = {'Authorization': 'Bearer ' + values['ApiKey']}
 
     def generate_model(self, model):
         count_vectorizer = self.vectorize(model)

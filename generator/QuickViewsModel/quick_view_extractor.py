@@ -1,11 +1,8 @@
-import pandas as pd
-import pickle
 from pathlib import Path
 
 import requests
 import json
 from nltk import word_tokenize, re
-from sklearn.feature_extraction.text import CountVectorizer
 
 from definitions import Definitions
 from generator.QuickViewsModel.HTMLExtractor import HTMLExtractor
@@ -32,6 +29,7 @@ class QuickViewExtractor(object):
         factory = HTMLExtractor()
         data = {'numberOfResults': str(self.NUMBER_OF_RESULTS_PER_QUERY), 'sortCriteria': '@rowid ascending', 'cq': ''}
 
+        #i = 0
         while True:
             data['cq'] = '@rowid>' + str(smaller_id)
             response = requests.post(self.search_URL, headers=self.headers, data=data).json()
@@ -49,6 +47,10 @@ class QuickViewExtractor(object):
                 extracted_text = factory.extract_from_file_path(url, self.headers)
                 words = ' '.join(self.parseText(extracted_text))
                 model.append(words)
+
+                #i += 1
+                #if i > 10:
+                 #   return model
 
         return model
 
