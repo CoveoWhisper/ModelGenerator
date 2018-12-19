@@ -53,5 +53,5 @@ class AnalyticsModelGenerator(object):
     @staticmethod
     def save_model(model, save_path):
         os.makedirs(os.path.dirname(save_path), exist_ok=True)
-        with open(save_path, "wb") as out_file:
+        with open(save_path, "w") as out_file:
             json.dump(model, out_file, sort_keys=True, indent=4)
