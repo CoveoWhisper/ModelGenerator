@@ -1,4 +1,4 @@
-import argparse
+import sys
 
 from generator.AnalyticsModel.analytics_model_generator import AnalyticsModelGenerator
 from generator.FacetModel.facet_model_generator import FacetModelGenerator
@@ -6,10 +6,12 @@ from generator.KMeansModel.kmeans_model_generator import KMeansModelGenerator
 from generator.QuickViewsModel.quick_view_extractor import QuickViewExtractor
 from generator.TfidfModel.tfidf_model_generator import TfIdfModelGenerator
 from generator.WordCountModel.word_count_model_generator import WordCountModelGenerator
+from ShowHelpParser import ShowHelpParser
 
 
 def main():
-    program_arguments = get_program_arguments()
+    arguments_parser = get_program_arguments()
+    program_arguments = arguments_parser.parse_args()
     is_verbose = program_arguments.verbose
 
     if program_arguments.generate_all:
@@ -22,6 +24,11 @@ def main():
 
     else:
         generate = program_arguments.generate
+
+        if generate is None:
+            arguments_parser.print_help()
+            sys.exit(1)
+
         if 'a' in generate:
             AnalyticsModelGenerator().generate_model(is_verbose)
         if 'f' in generate:
@@ -37,7 +44,7 @@ def main():
 
 
 def get_program_arguments():
-    arguments_parser = argparse.ArgumentParser(description='Whisper model generator.')
+    arguments_parser = ShowHelpParser(description='Whisper model generator.')
     arguments_parser.add_argument(
         '-g', '--generate',
         action='store',
@@ -53,21 +60,15 @@ def get_program_arguments():
         action='store_true',
         help='Print more information',
     )
-    return arguments_parser.parse_args()
+
+    if len(sys.argv) == 1:
+        arguments_parser.print_help(sys.stderr)
+        sys.exit(1)
+
+    return arguments_parser
+
 
 if __name__ == '__main__':
     main()
-    #test = FacetModelGenerator_inst.generate_model()
-    #t = QuickViewExtractor_inst.create_model()
-    #WordCountModelGenerator_inst.generate_model(t)
-    #TfidfGenerator_inst.generate_model(t)
-
-    #bin_file = open('count_vectorizer_model.bin', 'rb')
-    #x1 = pickle.load(bin_file)
-    #bin_file.close()
-
-    #bin_file = open('query_model.bin', 'rb')
-    #x2 = pickle.load(bin_file)
-    #bin_file.close()
 
     print('Test')
