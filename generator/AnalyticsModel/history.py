@@ -1,9 +1,9 @@
 import csv
 
-from generator.AnalyticsModel.history_action_type import HistoryActionType
+from whisper_analytics_analyzer.history_action_type import HistoryActionType
 
 TIMESTAMP_COLUMN_NAMES = {HistoryActionType.SEARCH: "searchDatetime", HistoryActionType.CLICK: "clickDatetime"}
-VALUE_COLUMN_NAMES = {HistoryActionType.SEARCH: "queryExpression", HistoryActionType.CLICK: "documentUrl"}
+VALUE_COLUMN_NAMES = {HistoryActionType.SEARCH: ["queryExpression"], HistoryActionType.CLICK: ["documentUrl", "documentTitle"]}
 
 
 def extract_history_actions(csv_path, action_type, history):
@@ -12,11 +12,17 @@ def extract_history_actions(csv_path, action_type, history):
         headers = next(csv_reader)
         user_id_column_index = headers.index("userId")
         timestamp_column_index = headers.index(TIMESTAMP_COLUMN_NAMES[action_type])
-        value_column_index = headers.index(VALUE_COLUMN_NAMES[action_type])
+        value_column_indices = {
+            value_column_name: headers.index(value_column_name)
+            for value_column_name in VALUE_COLUMN_NAMES[action_type]
+        }
         for row in csv_reader:
             user_id = row[user_id_column_index]
             timestamp = row[timestamp_column_index]
-            value = row[value_column_index]
+            value = {
+                value_column_name: row[value_column_indices[value_column_name]]
+                for value_column_name in VALUE_COLUMN_NAMES[action_type]
+            }
             action = HistoryAction(timestamp, action_type, value)
             if user_id not in history:
                 history[user_id] = [action]

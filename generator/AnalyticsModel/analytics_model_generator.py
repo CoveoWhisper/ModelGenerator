@@ -4,6 +4,8 @@ import json
 
 from definitions import Definitions
 from generator.AnalyticsModel.analysis import get_search_to_clicks_mapping
+from generator.AnalyticsModel.broken_links import remove_broken_links_documents_searches_mapping, \
+    remove_broken_links_documents_clicks
 from generator.AnalyticsModel.clicks_counts import get_clicks_counts
 from generator.AnalyticsModel.history import get_history
 
@@ -22,7 +24,7 @@ class AnalyticsModelGenerator(object):
         pop = self.generate_documents_popularity(CLICKS_FILE_PATH, is_verbose)
         if is_verbose:
             print('-- Generating searches document--')
-        searches = self.generate_documents_searches_mapping(SEARCHES_FILE_PATH, CLICKS_FILE_PATH, is_verbose)
+        searches = self.generate_documents_searches_mapping(SEARCHES_FILE_PATH, CLICKS_FILE_PATH, pop, is_verbose)
         if is_verbose:
             print('-- Saving clicks.csv--')
         self.save_model(pop, Definitions.ROOT_DIR + DOCUMENTS_POPULARITY_PATH)
@@ -34,17 +36,17 @@ class AnalyticsModelGenerator(object):
 
     @staticmethod
     def generate_documents_popularity(path, is_verbose):
-        return get_clicks_counts(path, is_verbose)
+        clicks_counts = get_clicks_counts(CLICKS_FILE_PATH)
+        remove_broken_links_documents_clicks(clicks_counts)
+        return clicks_counts
 
     @staticmethod
-    def generate_documents_searches_mapping(searches_file_path, clicks_file_path, is_verbose):
+    def generate_documents_searches_mapping(searches_file_path, clicks_file_path, documents_popularity, is_verbose):
         if is_verbose:
             print('Gettting history of document in analytics files')
         history = get_history(searches_file_path, clicks_file_path)
         documents_searches_mapping = get_search_to_clicks_mapping(history)
-        for documents_search_mapping in documents_searches_mapping:
-            documents_searches_mapping[documents_search_mapping] = \
-                list(documents_searches_mapping[documents_search_mapping])
+        remove_broken_links_documents_searches_mapping(documents_searches_mapping, documents_popularity)
 
         return documents_searches_mapping
 
