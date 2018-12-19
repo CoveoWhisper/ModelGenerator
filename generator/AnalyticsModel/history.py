@@ -1,6 +1,6 @@
 import csv
 
-from whisper_analytics_analyzer.history_action_type import HistoryActionType
+from generator.AnalyticsModel.history_action_type import HistoryActionType
 
 TIMESTAMP_COLUMN_NAMES = {HistoryActionType.SEARCH: "searchDatetime", HistoryActionType.CLICK: "clickDatetime"}
 VALUE_COLUMN_NAMES = {HistoryActionType.SEARCH: ["queryExpression"], HistoryActionType.CLICK: ["documentUrl", "documentTitle"]}

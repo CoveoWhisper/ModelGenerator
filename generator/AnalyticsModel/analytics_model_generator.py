@@ -36,8 +36,8 @@ class AnalyticsModelGenerator(object):
 
     @staticmethod
     def generate_documents_popularity(path, is_verbose):
-        clicks_counts = get_clicks_counts(CLICKS_FILE_PATH)
-        remove_broken_links_documents_clicks(clicks_counts)
+        clicks_counts = get_clicks_counts(CLICKS_FILE_PATH, is_verbose)
+        remove_broken_links_documents_clicks(clicks_counts, is_verbose)
         return clicks_counts
 
     @staticmethod
@@ -46,7 +46,7 @@ class AnalyticsModelGenerator(object):
             print('Gettting history of document in analytics files')
         history = get_history(searches_file_path, clicks_file_path)
         documents_searches_mapping = get_search_to_clicks_mapping(history)
-        remove_broken_links_documents_searches_mapping(documents_searches_mapping, documents_popularity)
+        remove_broken_links_documents_searches_mapping(documents_searches_mapping, documents_popularity, is_verbose)
 
         return documents_searches_mapping
 

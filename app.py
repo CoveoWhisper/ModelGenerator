@@ -1,4 +1,5 @@
 import sys
+import os
 
 from generator.AnalyticsModel.analytics_model_generator import AnalyticsModelGenerator
 from generator.FacetModel.facet_model_generator import FacetModelGenerator
@@ -8,11 +9,15 @@ from generator.TfidfModel.tfidf_model_generator import TfIdfModelGenerator
 from generator.WordCountModel.word_count_model_generator import WordCountModelGenerator
 from ShowHelpParser import ShowHelpParser
 
+OUTPUT_PATH = "/output"
+
 
 def main():
     arguments_parser = get_program_arguments()
     program_arguments = arguments_parser.parse_args()
     is_verbose = program_arguments.verbose
+
+    os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
 
     if program_arguments.generate_all:
         FacetModelGenerator().generate_model(is_verbose)
@@ -32,7 +37,7 @@ def main():
         if 'a' in generate:
             AnalyticsModelGenerator().generate_model(is_verbose)
         if 'f' in generate:
-            FacetModelGenerator().generate_model()
+            FacetModelGenerator().generate_model(is_verbose)
         if 't' or 'w' or 'k' in generate:
             model = QuickViewExtractor().create_model(is_verbose)
             if 't' in generate:
